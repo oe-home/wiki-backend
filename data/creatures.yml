@@ -1,0 +1,15 @@
+- Name: $griffin_name 
+  Level: 3
+  Fraction: $temple
+  Type: $magic_creature
+  Health: 25
+  Atack: 8
+  Defence: 8
+  MinDamage: 5
+  MaxDamage: 9
+  Initiative: 9
+  Speed: 4
+  Morale: 0
+  Luck: 0
+  Abilities: 
+    - flying
