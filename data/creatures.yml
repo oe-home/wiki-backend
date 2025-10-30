@@ -1,7 +1,7 @@
-- Name: $griffin_name 
+- Name: "$griffin_name"
   Level: 3
-  Fraction: $temple
-  Type: $magic_creature
+  Fraction: "$temple"
+  Type: "$magic_creature"
   Health: 25
   Atack: 8
   Defence: 8

@@ -14,5 +14,5 @@ public sealed record Creature(
     uint Speed,
     int Morale,
     int Luck,
-    string[] Abilities
+    Ability[] Abilities
 );
