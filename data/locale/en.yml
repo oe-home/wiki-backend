@@ -1,1 +1,5 @@
-griffin_name: Griffin
+griffin_name: "Griffin"
+flying_ability_name: "Flying"
+flying_ability_description: "That allow creature to fly"
+temple: "Temple"
+magic_creature: "Magic creature"

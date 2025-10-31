@@ -114,23 +114,23 @@ public sealed class PersistentDataStorage() : IPersistentDataStorage
         Creature[] Creatures
     );
 
-    public sealed record CreatureDb(
-        string Name,
-        uint Level,
-        string Type,
-        string Fraction,
-        uint Health,
-        uint Attack,
-        uint Defence,
-        uint MinDamage,
-        uint MaxDamage,
-        uint Initiative,
-        uint Speed,
-        int Morale,
-        int Luck,
-        string[] Abilities
-    )
+    public sealed class CreatureDb
     {
+        public required string Name { get; set; }
+        public required uint Level { get; set; }
+        public required string Type { get; set; }
+        public required string Fraction { get; set; }
+        public required uint Health { get; set; }
+        public required uint Attack { get; set; }
+        public required uint Defence { get; set; }
+        public required uint MinDamage { get; set; }
+        public required uint MaxDamage { get; set; }
+        public required uint Initiative { get; set; }
+        public required uint Speed { get; set; }
+        public required int Morale { get; set; }
+        public required int Luck { get; set; }
+        public required string[] Abilities { get; set; }
+
         public Creature ToDomain(
             LangDict langDict,
             Dictionary<string, AbilityDb> abilitiesDb)
@@ -141,7 +141,7 @@ public sealed class PersistentDataStorage() : IPersistentDataStorage
             return new Creature(
                 Name: LocalizeString(Name, langDict),
                 Level,
-                Type,
+                Type: LocalizeString(Type, langDict),
                 Fraction: LocalizeString(Fraction, langDict),
                 Health,
                 Attack,
@@ -157,11 +157,10 @@ public sealed class PersistentDataStorage() : IPersistentDataStorage
         }
     };
 
-    public sealed record AbilityDb(
-        string Name,
-        string Description
-    )
+    public sealed class AbilityDb
     {
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public Ability ToDomain(LangDict langDict)
         {
             return new Ability(

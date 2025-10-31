@@ -1,1 +1,5 @@
-griffin_name: Грифон
+griffin_name: "Грифон"
+flying_ability_name: "Полёт"
+flying_ability_description: "Способность позволяет существам летать"
+temple: "Храм"
+magic_creature: "Магическое существо"
