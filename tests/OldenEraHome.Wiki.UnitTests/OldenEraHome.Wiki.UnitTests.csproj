@@ -22,4 +22,11 @@
     <ProjectReference Include="..\..\src\OldenEraHome.Wiki.WebApi\OldenEraHome.Wiki.WebApi.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\..\data\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>data\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Content>
+  </ItemGroup>
+
 </Project>
