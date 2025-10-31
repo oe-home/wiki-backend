@@ -29,7 +29,8 @@ public sealed class PersistentDataStorage() : IPersistentDataStorage
         }
 
         var yamlDeserializer = new DeserializerBuilder()
-            .WithNamingConvention(PascalCaseNamingConvention.Instance)
+            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .WithEnforceRequiredMembers()
             .Build();
 
         var localeFolder = Path.Combine(AppContext.BaseDirectory, "data", "locale");
@@ -115,7 +116,7 @@ public sealed class PersistentDataStorage() : IPersistentDataStorage
         string Type,
         string Fraction,
         uint Health,
-        uint Atack,
+        uint Attack,
         uint Defence,
         uint MinDamage,
         uint MaxDamage,
@@ -139,7 +140,7 @@ public sealed class PersistentDataStorage() : IPersistentDataStorage
                 Type,
                 Fraction: LocalizeString(Fraction, langDict),
                 Health,
-                Atack,
+                Attack,
                 Defence,
                 MinDamage,
                 MaxDamage,

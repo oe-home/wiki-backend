@@ -1,3 +1,3 @@
 flying:
-  Name: "$flying_ability_name"
-  Description: "$flying_ability_description"
+  name: "$flying_ability_name"
+  description: "$flying_ability_description"

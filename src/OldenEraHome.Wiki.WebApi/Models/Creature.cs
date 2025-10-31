@@ -6,7 +6,7 @@ public sealed record Creature(
     string Type,
     string Fraction,
     uint Health,
-    uint Atack,
+    uint Attack,
     uint Defence,
     uint MinDamage,
     uint MaxDamage,
