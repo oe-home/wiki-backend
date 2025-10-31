@@ -36,7 +36,7 @@ public sealed class PersistentDataStorage() : IPersistentDataStorage
         var localeFolder = Path.Combine(AppContext.BaseDirectory, "data", "locale");
         var availableLocales = Directory
             .EnumerateFiles(localeFolder)
-            .Select(fileName => fileName.Split('.').First())
+            .Select(Path.GetFileNameWithoutExtension)
             .ToArray();
 
         Data = new Dictionary<string, WikiData>(availableLocales.Length);
@@ -46,6 +46,10 @@ public sealed class PersistentDataStorage() : IPersistentDataStorage
 
         foreach (var locale in availableLocales)
         {
+            if (locale is null)
+            {
+                continue;
+            }
             var localeDict = await LoadLocaleFileAsync(yamlDeserializer, localeFolder, locale);
             var creatures = creaturesDb.Select(c => c.ToDomain(localeDict, abilitiesDb)).ToArray();
             Data.Add(locale, new WikiData(creatures));
@@ -83,7 +87,7 @@ public sealed class PersistentDataStorage() : IPersistentDataStorage
         }
         catch (Exception e)
         {
-            throw new InvalidCastException($"Can't deserialize file: {fileName}", e);
+            throw new InvalidOperationException($"Failed to load or deserialize file: {fileName}. See inner exception for details.", e);
         }
     }
 
