@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using OldenEraHome.Wiki.WebApi.Abstractions;
 using OldenEraHome.Wiki.WebApi.Endpoints;
 using OldenEraHome.Wiki.WebApi.Infrastructure;
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
+services.AddSingleton<IFileSystem, FileSystem>();
 services.AddSingleton<WikiInfoProvider>();
 services.AddSingleton<ICacheStorage, DisabledCache>();
 services.AddSingleton<IPersistentDataStorage, PersistentDataStorage>();

@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.IO.Abstractions;
 using OldenEraHome.Wiki.WebApi.Abstractions;
 using OldenEraHome.Wiki.WebApi.Models;
 using YamlDotNet.Serialization;
@@ -33,10 +34,10 @@ public sealed class PersistentDataStorage(IFileSystem fileSystem) : IPersistentD
             .WithEnforceRequiredMembers()
             .Build();
 
-        var localeFolder = Path.Combine(AppContext.BaseDirectory, "data", "locale");
-        var availableLocales = Directory
+        var localeFolder = fileSystem.Path.Combine(AppContext.BaseDirectory, "data", "locale");
+        var availableLocales = fileSystem.Directory
             .EnumerateFiles(localeFolder)
-            .Select(Path.GetFileNameWithoutExtension)
+            .Select(fileSystem.Path.GetFileNameWithoutExtension)
             .ToArray();
 
         Data = new Dictionary<string, WikiData>(availableLocales.Length);
@@ -56,32 +57,30 @@ public sealed class PersistentDataStorage(IFileSystem fileSystem) : IPersistentD
         }
     }
 
-    private static async Task<LangDict> LoadLocaleFileAsync(IDeserializer deserializer, string localeFolder, string locale)
+    private async Task<LangDict> LoadLocaleFileAsync(IDeserializer deserializer, string localeFolder, string locale)
     {
-        var fileName = Path.Combine(localeFolder, $"{locale}.yml");
+        var fileName = fileSystem.Path.Combine(localeFolder, $"{locale}.yml");
         var localeDict = await LoadFromYamlFileAsync<Dictionary<string, string>>(deserializer, fileName);
         return localeDict.GetAlternateLookup<ReadOnlySpan<char>>();
     }
 
-    private static Task<Dictionary<string, AbilityDb>> LoadAbilitiesDbAsync(IDeserializer deserializer)
+    private Task<Dictionary<string, AbilityDb>> LoadAbilitiesDbAsync(IDeserializer deserializer)
     {
-        var fileName = Path.Combine(AppContext.BaseDirectory, "data", "abilities.yml");
+        var fileName = fileSystem.Path.Combine(AppContext.BaseDirectory, "data", "abilities.yml");
         return LoadFromYamlFileAsync<Dictionary<string, AbilityDb>>(deserializer, fileName);
     }
 
-    private static Task<CreatureDb[]> LoadCreaturesDbAsync(IDeserializer deserializer)
+    private Task<CreatureDb[]> LoadCreaturesDbAsync(IDeserializer deserializer)
     {
-        var fileName = Path.Combine(AppContext.BaseDirectory, "data", "creatures.yml");
+        var fileName = fileSystem.Path.Combine(AppContext.BaseDirectory, "data", "creatures.yml");
         return LoadFromYamlFileAsync<CreatureDb[]>(deserializer, fileName);
     }
 
-    private static async Task<T> LoadFromYamlFileAsync<T>(IDeserializer deserializer, string fileName)
+    private async Task<T> LoadFromYamlFileAsync<T>(IDeserializer deserializer, string fileName)
     {
         try
         {
-            using var file = File.OpenRead(fileName);
-            using var streamReader = new StreamReader(file);
-            var fileData = await streamReader.ReadToEndAsync();
+            var fileData = await fileSystem.File.ReadAllTextAsync(fileName, CancellationToken.None);
             var result = deserializer.Deserialize<T>(fileData);
             return result;
         }
