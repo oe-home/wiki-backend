@@ -9,10 +9,11 @@ public class PersistentDataStorageTests
     public async Task GetCreaturesAsync_DeserializesDataCorrectly()
     {
         // Arrange
+        const string baseDir = "/data";
         var mockFileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
         {
             {
-                "creatures.yml", new MockFileData(
+                $"{baseDir}/creatures.yml", new MockFileData(
                     """
                     - name: "$griffin_name"
                       level: 3
@@ -32,7 +33,7 @@ public class PersistentDataStorageTests
                     """)
             },
             {
-                "abilities.yml", new MockFileData(
+                $"{baseDir}/abilities.yml", new MockFileData(
                     """
                     flying:
                       name: "$flying_ability_name"
@@ -40,7 +41,7 @@ public class PersistentDataStorageTests
                     """)
             },
             {
-                "locale/en.yml", new MockFileData(
+                $"{baseDir}/locale/en.yml", new MockFileData(
                     """
                     griffin_name: Griffin
                     temple: Temple
@@ -51,7 +52,7 @@ public class PersistentDataStorageTests
             }
         });
 
-        var storage = new PersistentDataStorage(mockFileSystem, "");
+        var storage = new PersistentDataStorage(mockFileSystem, baseDir);
 
         // Act
         var creatures = await storage.GetCreaturesAsync("en");
@@ -81,5 +82,95 @@ public class PersistentDataStorageTests
         var ability = Assert.Single(griffin.Abilities);
         Assert.Equal("Flying", ability.Name);
         Assert.Equal("Can fly over walls.", ability.Description);
+    }
+
+    [Fact]
+    public async Task GetCreaturesAsync_ThrowsWhenCreaturesFileIsMissing()
+    {
+        // Arrange
+        const string baseDir = "/data";
+        var mockFileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+        {
+            // creatures.yml is missing
+            {
+                $"{baseDir}/abilities.yml", new MockFileData(
+                    """
+                    flying:
+                      name: "$flying_ability_name"
+                      description: "$flying_ability_description"
+                    """)
+            },
+            {
+                $"{baseDir}/locale/en.yml", new MockFileData(
+                    """
+                    griffin_name: Griffin
+                    temple: Temple
+                    magic_creature: Magic Creature
+                    flying_ability_name: Flying
+                    flying_ability_description: Can fly over walls.
+                    """)
+            }
+        });
+
+        var storage = new PersistentDataStorage(mockFileSystem, baseDir);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => storage.GetCreaturesAsync("en"));
+        Assert.Contains("Failed to load or deserialize file", exception.Message);
+        Assert.Contains("creatures.yml", exception.Message);
+    }
+
+    [Fact]
+    public async Task GetCreaturesAsync_ThrowsWhenLocalizationIsMissing()
+    {
+        // Arrange
+        const string baseDir = "/data";
+        var mockFileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+        {
+            {
+                $"{baseDir}/creatures.yml", new MockFileData(
+                    """
+                    - name: "$griffin_name"
+                      level: 3
+                      fraction: "$temple"
+                      type: "$magic_creature"
+                      health: 25
+                      attack: 8
+                      defence: 8
+                      minDamage: 5
+                      maxDamage: 9
+                      initiative: 9
+                      speed: 4
+                      morale: 0
+                      luck: 0
+                      abilities:
+                        - flying
+                    """)
+            },
+            {
+                $"{baseDir}/abilities.yml", new MockFileData(
+                    """
+                    flying:
+                      name: "$flying_ability_name"
+                      description: "$flying_ability_description"
+                    """)
+            },
+            {
+                $"{baseDir}/locale/en.yml", new MockFileData(
+                    """
+                    griffin_name: Griffin
+                    # temple: Temple is missing
+                    magic_creature: Magic Creature
+                    flying_ability_name: Flying
+                    flying_ability_description: Can fly over walls.
+                    """)
+            }
+        });
+
+        var storage = new PersistentDataStorage(mockFileSystem, baseDir);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<InvalidCastException>(() => storage.GetCreaturesAsync("en"));
+        Assert.Contains("Can't be resolve localization for value: $temple", exception.Message);
     }
 }
