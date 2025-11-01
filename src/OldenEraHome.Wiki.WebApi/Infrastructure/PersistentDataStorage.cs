@@ -22,7 +22,7 @@ public sealed class PersistentDataStorage(IFileSystem fileSystem, string baseDir
     #region Initialization
 
     [MemberNotNull(nameof(Data))]
-    private async Task InitAsync()
+    internal async Task InitAsync()
     {
         if (Data is not null)
         {

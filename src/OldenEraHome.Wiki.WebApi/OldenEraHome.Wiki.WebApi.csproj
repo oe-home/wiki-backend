@@ -19,4 +19,8 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+     <InternalsVisibleTo Include="OldenEraHome.Wiki.UnitTests" />
+  </ItemGroup>
+
 </Project>
