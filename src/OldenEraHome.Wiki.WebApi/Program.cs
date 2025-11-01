@@ -8,10 +8,14 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-services.AddSingleton<IFileSystem, FileSystem>();
 services.AddSingleton<WikiInfoProvider>();
 services.AddSingleton<ICacheStorage, DisabledCache>();
-services.AddSingleton<IPersistentDataStorage, PersistentDataStorage>();
+services.AddSingleton<IPersistentDataStorage>((sp) =>
+    new PersistentDataStorage(
+        new FileSystem(),
+        Path.Combine(AppContext.BaseDirectory, "data")
+    )
+);
 
 services.AddOpenApi();
 services.AddGetCreaturesEndpointServices(configuration);

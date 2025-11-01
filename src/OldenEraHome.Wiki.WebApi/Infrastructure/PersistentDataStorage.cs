@@ -9,7 +9,7 @@ using LangDict = System.Collections.Generic.Dictionary<string, string>.Alternate
 
 namespace OldenEraHome.Wiki.WebApi.Infrastructure;
 
-public sealed class PersistentDataStorage(IFileSystem fileSystem) : IPersistentDataStorage
+public sealed class PersistentDataStorage(IFileSystem fileSystem, string baseDirectory) : IPersistentDataStorage
 {
     private Dictionary<string, WikiData>? Data { get; set; }
 
@@ -34,7 +34,7 @@ public sealed class PersistentDataStorage(IFileSystem fileSystem) : IPersistentD
             .WithEnforceRequiredMembers()
             .Build();
 
-        var localeFolder = fileSystem.Path.Combine(AppContext.BaseDirectory, "data", "locale");
+        var localeFolder = fileSystem.Path.Combine(baseDirectory, "locale");
         var availableLocales = fileSystem.Directory
             .EnumerateFiles(localeFolder)
             .Select(fileSystem.Path.GetFileNameWithoutExtension)
@@ -66,13 +66,13 @@ public sealed class PersistentDataStorage(IFileSystem fileSystem) : IPersistentD
 
     private Task<Dictionary<string, AbilityDb>> LoadAbilitiesDbAsync(IDeserializer deserializer)
     {
-        var fileName = fileSystem.Path.Combine(AppContext.BaseDirectory, "data", "abilities.yml");
+        var fileName = fileSystem.Path.Combine(baseDirectory, "abilities.yml");
         return LoadFromYamlFileAsync<Dictionary<string, AbilityDb>>(deserializer, fileName);
     }
 
     private Task<CreatureDb[]> LoadCreaturesDbAsync(IDeserializer deserializer)
     {
-        var fileName = fileSystem.Path.Combine(AppContext.BaseDirectory, "data", "creatures.yml");
+        var fileName = fileSystem.Path.Combine(baseDirectory, "creatures.yml");
         return LoadFromYamlFileAsync<CreatureDb[]>(deserializer, fileName);
     }
 
