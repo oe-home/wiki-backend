@@ -8,7 +8,7 @@ using LangDict = System.Collections.Generic.Dictionary<string, string>.Alternate
 
 namespace OldenEraHome.Wiki.WebApi.Infrastructure;
 
-public sealed class PersistentDataStorage() : IPersistentDataStorage
+public sealed class PersistentDataStorage(IFileSystem fileSystem) : IPersistentDataStorage
 {
     private Dictionary<string, WikiData>? Data { get; set; }
 
