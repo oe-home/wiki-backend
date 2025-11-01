@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: http://localhost:5093/creatures
+  url: http://localhost:5093/creatures?lang=ru
   body: none
   auth: inherit
+}
+
+params:query {
+  lang: ru
 }

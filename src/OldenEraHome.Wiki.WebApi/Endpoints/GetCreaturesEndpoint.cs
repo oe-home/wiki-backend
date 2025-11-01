@@ -1,17 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
-using OldenEraHome.Wiki.WebApi.Servises;
+using OldenEraHome.Wiki.WebApi.Services;
 
 namespace OldenEraHome.Wiki.WebApi.Endpoints;
 
 public static class GetCreaturesEndpoint
 {
-    public static IServiceCollection AddGetCreaturesEndpointServives(
-        this IServiceCollection servises,
+    public static IServiceCollection AddGetCreaturesEndpointServices(
+        this IServiceCollection services,
         IConfiguration configuration
     )
     {
-        servises.AddScoped<EndpointServises>();
-        return servises;
+        services.AddScoped<EndpointServices>();
+        return services;
     }
 
     public static IEndpointRouteBuilder MapGetCreaturesEndpoint(this IEndpointRouteBuilder app)
@@ -22,10 +22,10 @@ public static class GetCreaturesEndpoint
 
     private static async Task<IResult> Handle(
         [AsParameters] EndpointRequest request,
-        [FromServices] EndpointServises servises
+        [FromServices] EndpointServices services
     )
     {
-        var creatures = await servises.InfoProvider.GetCreaturesAsync(request.Filter, request.Language);
+        var creatures = await services.InfoProvider.GetCreaturesAsync(request.Filter, request.Language);
         return Results.Ok(creatures);
     }
 
@@ -34,7 +34,7 @@ public static class GetCreaturesEndpoint
         [FromQuery(Name = "lang")] string Language = "en"
     );
 
-    private sealed record EndpointServises(
+    private sealed record EndpointServices(
         WikiInfoProvider InfoProvider
     );
 

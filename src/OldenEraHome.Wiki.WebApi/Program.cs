@@ -1,18 +1,18 @@
 using OldenEraHome.Wiki.WebApi.Abstractions;
 using OldenEraHome.Wiki.WebApi.Endpoints;
 using OldenEraHome.Wiki.WebApi.Infrastructure;
-using OldenEraHome.Wiki.WebApi.Servises;
+using OldenEraHome.Wiki.WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-var servises = builder.Services;
+var services = builder.Services;
 var configuration = builder.Configuration;
 
-servises.AddSingleton<WikiInfoProvider>();
-servises.AddSingleton<ICacheStorage, DisabledCache>();
-servises.AddSingleton<IPersistentDataStorage, PersistentDataStorage>();
+services.AddSingleton<WikiInfoProvider>();
+services.AddSingleton<ICacheStorage, DisabledCache>();
+services.AddSingleton<IPersistentDataStorage, PersistentDataStorage>();
 
-servises.AddOpenApi();
-servises.AddGetCreaturesEndpointServives(configuration);
+services.AddOpenApi();
+services.AddGetCreaturesEndpointServices(configuration);
 
 var app = builder.Build();
 

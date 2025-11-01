@@ -1,7 +1,7 @@
 using OldenEraHome.Wiki.WebApi.Abstractions;
 using OldenEraHome.Wiki.WebApi.Models;
 
-namespace OldenEraHome.Wiki.WebApi.Servises;
+namespace OldenEraHome.Wiki.WebApi.Services;
 
 public sealed class WikiInfoProvider(
     IPersistentDataStorage persistentDataStorage,
